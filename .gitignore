@@ -9,6 +9,7 @@ local.properties
 .DS_Store
 
 # Keystore files
+*.env
 *.jks
 *.keystore
 
@@ -41,3 +42,6 @@ crashlytics-build.properties
 
 # Local configuration
 /local.properties
+
+# firebase Settings
+app/google-services.json
