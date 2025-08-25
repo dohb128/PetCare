@@ -1,0 +1,43 @@
+# Gradle files
+.gradle/
+/build/
+
+# Android Studio files
+.idea/
+*.iml
+local.properties
+.DS_Store
+
+# Keystore files
+*.jks
+*.keystore
+
+# External native build files
+.externalNativeBuild/
+.cxx/
+
+# Generated files
+/captures/
+/app/build/
+/app/.cxx/
+/app/.externalNativeBuild/
+
+# Crashlytics
+crashlytics-build.properties
+
+# Firebase
+*.google-services.json
+
+# User-specific files
+*.user
+
+# Android specific files
+*.apk
+*.ap_
+*.aab
+
+# Kotlin
+*.kpt
+
+# Local configuration
+/local.properties
