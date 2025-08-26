@@ -56,6 +56,15 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
 
     private Uri selectedImageUri;
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null) {
+            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.90);
+            getDialog().getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
+    }
+
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {

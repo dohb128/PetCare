@@ -40,7 +40,7 @@
             android:clickable="true"
             android:focusable="true"
             app:backgroundTint="#CFF6A5"
-            app:srcCompat="@drawable/img_1" />
+            app:srcCompat="@drawable/eye" />
 
     </RelativeLayout>
 

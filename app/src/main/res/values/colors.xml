@@ -5,6 +5,7 @@
 
     <color name="colorPrimary">#A0D468</color>
     <color name="colorPrimaryVariant">#8CBF5A</color>
+    <color name="colorPrimarythick">#467314</color>
     <color name="colorSecondary">#E0E0E0</color>
     <color name="colorSecondaryVariant">#BDBDBD</color>
     <color name="colorOnPrimary">#000000</color>

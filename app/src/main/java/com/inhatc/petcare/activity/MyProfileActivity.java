@@ -27,14 +27,14 @@ import com.inhatc.petcare.adapter.PetAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class MyProfileActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AddPetDialogFragment.OnPetAddedListener {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
-    private CircleImageView profileImage;
+    
     private TextView navTitleView;
     private TextView emailProfileTextView;
     private FirebaseAuth mAuth;
@@ -80,17 +80,7 @@ public class MyProfileActivity extends AppCompatActivity implements NavigationVi
         emailProfileTextView = findViewById(R.id.txt_email);
         emailProfileTextView.setText(currentUser.getEmail());
 
-        // Initialize profileImage from the toolbar
-        profileImage = toolbar.findViewById(R.id.profile_image);
-        // Set click listener for profile image in toolbar
-        if (profileImage != null) {
-            profileImage.setOnClickListener(v -> {
-                Toast.makeText(MyProfileActivity.this, "프로필 사진 변경", Toast.LENGTH_SHORT).show();
-            });
-        } else {
-            // Log an error or handle the case where profileImage is not found in the toolbar
-            // For now, we'll just skip setting the click listener
-        }
+        
 
         // Initialize RecyclerView
         registeredPetsRecyclerView = findViewById(R.id.registeredPetsRecyclerView);

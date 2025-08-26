@@ -19,14 +19,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseUser;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
-    private CircleImageView profileImage;
+    
     private TextView navTitleView;
     private FirebaseAuth mAuth;
     private FloatingActionButton fabPetEyeHealth;
@@ -63,20 +63,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View headerView = navigationView.getHeaderView(0);
         navTitleView = headerView.findViewById(R.id.nav_Title);
 
-        // Set user email in navigation header
-        navTitleView.setText(currentUser.getEmail());
+        // Set app title in navigation header
+        navTitleView.setText("PetCare");
 
-        // Initialize profileImage from the toolbar
-        profileImage = toolbar.findViewById(R.id.profile_image);
-        // Set click listener for profile image in toolbar
-        if (profileImage != null) {
-            profileImage.setOnClickListener(v -> {
-                Toast.makeText(MainActivity.this, "프로필 사진 변경 (로그인 관련 기능 아님)", Toast.LENGTH_SHORT).show();
-            });
-        } else {
-            // Log an error or handle the case where profileImage is not found in the toolbar
-            // For now, we'll just skip setting the click listener
-        }
+        
 
         // Initialize and set click listener for FabPetEyeHealth
         fabPetEyeHealth = findViewById(R.id.FabPetEyeHealth);

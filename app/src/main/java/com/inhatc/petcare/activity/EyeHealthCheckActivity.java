@@ -32,7 +32,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.io.IOException;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+
 
 public class EyeHealthCheckActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -42,7 +42,7 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
-    private CircleImageView profileImage;
+    
     private TextView emailTextView;
     private ImageView imageView;
     private Button cameraButton, galleryButton;
@@ -110,26 +110,9 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
         cameraButton = findViewById(R.id.camera_button);
         galleryButton = findViewById(R.id.gallery_button);
 
-        // Set user email in navigation header
-        emailTextView.setText(currentUser.getEmail());
+        
 
-        // Set click listener for profile image in navigation header
-        profileImage.setOnClickListener(v -> {
-            Toast.makeText(EyeHealthCheckActivity.this, "프로필 사진 변경", Toast.LENGTH_SHORT).show();
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
-                    openGallery();
-                } else {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, GALLERY_PERMISSION_REQUEST_CODE);
-                }
-            } else {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    openGallery();
-                } else {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, GALLERY_PERMISSION_REQUEST_CODE);
-                }
-            }
-        });
+        
 
         // Set click listeners for camera and gallery buttons
         cameraButton.setOnClickListener(v -> {
@@ -161,7 +144,9 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_logout) {
+        if (id == R.id.nav_my_page) { // Check if "My Page" was clicked
+            startActivity(new Intent(EyeHealthCheckActivity.this, MyProfileActivity.class));
+        } else if (id == R.id.nav_logout) {
             mAuth.signOut();
             startActivity(new Intent(EyeHealthCheckActivity.this, LoginActivity.class));
             finish();

@@ -79,14 +79,18 @@
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="취소"/>
+            android:text="취소"
+            android:textColor="@color/colorPrimarythick"
+            android:textColorLink="#304E09" />
 
         <Button
             android:id="@+id/buttonSave"
             style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="저장"/>
+            android:text="저장"
+            android:textColor="@color/colorPrimarythick"
+            android:textColorLink="@color/colorPrimary" />
 
     </LinearLayout>
 
