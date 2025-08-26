@@ -7,47 +7,42 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:openDrawer="start"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <!-- Main content area -->
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
-
-        <include layout="@layout/toolbar_profile" />
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_marginTop="32dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/img" />
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="20dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal">
 
-            <Button
-                android:id="@+id/camera_button"
+            <include layout="@layout/toolbar_profile" />
+
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="카메라"
-                android:layout_marginEnd="16dp"/>
+                android:layout_marginTop="32dp"
+                android:text="환영합니다!" />
 
-            <Button
-                android:id="@+id/gallery_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="갤러리"/>
         </LinearLayout>
 
-    </LinearLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/FabPetEyeHealth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:backgroundTint="#CFF6A5"
+            app:srcCompat="@drawable/img_1" />
+
+    </RelativeLayout>
 
     <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
@@ -56,7 +51,9 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        android:visibility="invisible"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/nav_menu" />
+        app:menu="@menu/nav_menu"
+        tools:visibility="invisible" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

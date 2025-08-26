@@ -1,5 +1,6 @@
-package com.inhatc.petcare;
+package com.inhatc.petcare.activity;
 
+import com.inhatc.petcare.R;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Button;

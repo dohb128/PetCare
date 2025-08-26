@@ -1,5 +1,6 @@
-package com.inhatc.petcare;
+package com.inhatc.petcare.activity;
 
+import com.inhatc.petcare.R;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -33,7 +34,7 @@ import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class EyeHealthCheckActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
     private static final int GALLERY_PERMISSION_REQUEST_CODE = 101;
@@ -76,12 +77,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_eye_health_check);
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            startActivity(new Intent(EyeHealthCheckActivity.this, LoginActivity.class));
             finish();
             return;
         }
@@ -103,8 +104,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Find views in the navigation header
         View headerView = navigationView.getHeaderView(0);
-        profileImage = headerView.findViewById(R.id.nav_profile_image);
-        emailTextView = headerView.findViewById(R.id.nav_email_textview);
 
         // Find views in the main content area
         imageView = findViewById(R.id.imageView);
@@ -116,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         // Set click listener for profile image in navigation header
         profileImage.setOnClickListener(v -> {
-            Toast.makeText(MainActivity.this, "프로필 사진 변경", Toast.LENGTH_SHORT).show();
+            Toast.makeText(EyeHealthCheckActivity.this, "프로필 사진 변경", Toast.LENGTH_SHORT).show();
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
                     openGallery();
@@ -164,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.nav_logout) {
             mAuth.signOut();
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            startActivity(new Intent(EyeHealthCheckActivity.this, LoginActivity.class));
             finish();
         } else {
             // Handle other menu item clicks if needed, for now just show a toast
