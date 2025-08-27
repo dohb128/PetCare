@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
@@ -20,9 +21,14 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PetCare"
         tools:targetApi="31"
-        android:requestLegacyExternalStorage="true"> <activity
+        android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true">
+        <activity
         android:name=".activity.NearbyHospitalsActivity"
         android:exported="false" />
+        <activity
+            android:name=".activity.MedicalRecordActivity"
+            android:exported="false" />
         <activity
             android:name=".activity.EyeHealthCheckActivity"
             android:exported="false" />

@@ -53,4 +53,7 @@ dependencies {
 
     //DrawerLayout
     implementation "androidx.drawerlayout:drawerlayout:1.2.0"
+
+    // OkHttp for HTTP requests
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
 }

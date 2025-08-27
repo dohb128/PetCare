@@ -206,6 +206,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (id == R.id.nav_my_page) {
             startActivity(new Intent(MainActivity.this, MyProfileActivity.class));
+        } else if (id == R.id.nav_medical_records) {
+            Intent intent = new Intent(MainActivity.this, MedicalRecordActivity.class);
+            if (currentPet != null && currentPet.getName() != null) {
+                intent.putExtra("petName", currentPet.getName());
+            }
+            startActivity(intent);
+        } else if (id == R.id.nav_chatbot) {
+            Intent intent = new Intent(MainActivity.this, ChatbotActivity.class);
+            startActivity(intent);
+        }else if (id == R.id.nav_nearby_hospitals) {
+            Intent intent = new Intent(MainActivity.this, NearbyHospitalsActivity.class);
+            startActivity(intent);
         } else if (id == R.id.nav_logout) {
             mAuth.signOut();
             startActivity(new Intent(MainActivity.this, LoginActivity.class));

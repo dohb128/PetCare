@@ -375,7 +375,15 @@ public class MyProfileActivity extends AppCompatActivity implements NavigationVi
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_logout) {
+        if (id == R.id.nav_my_page) {
+            // 현재 화면: 아무 동작 없음
+        } else if (id == R.id.nav_medical_records) {
+            startActivity(new Intent(MyProfileActivity.this, MedicalRecordActivity.class));
+        } else if (id == R.id.nav_chatbot) {
+            startActivity(new Intent(MyProfileActivity.this, ChatbotActivity.class));
+        } else if (id == R.id.nav_nearby_hospitals) {
+            startActivity(new Intent(MyProfileActivity.this, NearbyHospitalsActivity.class));
+        } else if (id == R.id.nav_logout) {
             mAuth.signOut();
             startActivity(new Intent(MyProfileActivity.this, LoginActivity.class));
             finish();
