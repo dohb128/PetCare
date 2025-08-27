@@ -2,6 +2,7 @@ package com.inhatc.petcare.adapter;
 
 import com.inhatc.petcare.R;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,14 @@ import com.inhatc.petcare.model.Pet;
 
 import java.util.List;
 import java.util.Locale;
+
+import android.content.ContentResolver;
+import android.graphics.Bitmap;
+import android.provider.MediaStore;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class PetAdapter extends RecyclerView.Adapter<PetAdapter.PetViewHolder> {
 
@@ -48,13 +57,20 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.PetViewHolder> {
         holder.petItemNameTextView.setText(currentPet.getName());
         holder.petItemDetailsTextView.setText(String.format(Locale.getDefault(), "나이: %d세, 체중: %.1fkg", currentPet.getAge(), currentPet.getWeight()));
 
-        if (currentPet.getPhotoURL() != null && !currentPet.getPhotoURL().isEmpty()) {
-            // For loading images from URL, you would typically use a library like Glide or Picasso.
-            // Example with Uri.parse for local URIs or if photoURL is a local file path string.
-            // For actual web URLs, you MUST use an image loading library.
-            holder.petItemImageView.setImageURI(Uri.parse(currentPet.getPhotoURL()));
+        String photoURL = currentPet.getPhotoURL();
+        if (photoURL != null && !photoURL.isEmpty()) {
+            // photoURL이 Base64 문자열인지 확인하고 디코딩하여 이미지 설정
+            try {
+                byte[] decodedString = Base64.decode(photoURL, Base64.DEFAULT);
+                Bitmap decodedBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                holder.petItemImageView.setImageBitmap(decodedBitmap);
+            } catch (IllegalArgumentException e) {
+                // Base64 디코딩 실패 시 (일반 URL일 경우)
+                holder.petItemImageView.setImageResource(R.drawable.pet);
+                Log.e("PetAdapter", "Base64 string is invalid. Using default image.", e);
+            }
         } else {
-            holder.petItemImageView.setImageResource(R.drawable.pet); // Default image
+            holder.petItemImageView.setImageResource(R.drawable.pet); // 기본 이미지
         }
 
         holder.petItemEditButton.setOnClickListener(v -> {
@@ -86,7 +102,8 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.PetViewHolder> {
     }
 
     public static class PetViewHolder extends RecyclerView.ViewHolder {
-        ImageView petItemImageView;
+        // ImageView를 CircleImageView로 변경
+        CircleImageView petItemImageView;
         TextView petItemNameTextView;
         TextView petItemDetailsTextView;
         ImageButton petItemEditButton;

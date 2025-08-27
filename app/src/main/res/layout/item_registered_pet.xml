@@ -8,14 +8,14 @@
     android:padding="8dp"
     android:gravity="center_vertical">
 
-    <ImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/petItemImageView"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:src="@drawable/pet"
         android:scaleType="centerCrop"
-        android:background="@drawable/circle_background"
-        android:layout_marginEnd="16dp"/>
+        app:civ_border_color="@color/colorSecondary"
+        app:civ_border_width="1dp" />
 
     <LinearLayout
         android:layout_width="0dp"

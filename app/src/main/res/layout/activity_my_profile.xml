@@ -9,13 +9,12 @@
     tools:openDrawer="start"
     tools:context=".activity.MyProfileActivity">
 
-    <!-- Main content area -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <include layout="@layout/toolbar_profile" />
+        <include layout="@layout/toolbar_title" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -30,11 +29,13 @@
                 android:orientation="horizontal"
                 android:paddingBottom="16dp">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profileImageView"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:src="@drawable/user"
+                    app:civ_border_color="@color/colorSecondary"
+                    app:civ_border_width="2dp"
                     android:scaleType="centerCrop" />
 
                 <EditText
@@ -71,29 +72,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingVertical="8dp">
-
-                <EditText
-                    android:id="@+id/text_passwd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:inputType="textPassword" />
-
-                <Button
-                    android:id="@+id/btn_editPasswd"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="수정"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -120,7 +98,6 @@
 
     </LinearLayout>
 
-    <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"

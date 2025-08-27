@@ -93,6 +93,16 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
+        TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title_textview);
+        if (toolbarTitle != null) {
+            toolbarTitle.setOnClickListener(v -> {
+                Intent intent = new Intent(EyeHealthCheckActivity.this, MainActivity.class);
+                // 다른 액티비티 스택을 모두 지우고 새롭게 시작
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+            });
+        }
+
         drawerLayout = findViewById(R.id.drawer_layout);
         navigationView = findViewById(R.id.nav_view);
 

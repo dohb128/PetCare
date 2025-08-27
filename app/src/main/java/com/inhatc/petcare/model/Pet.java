@@ -1,6 +1,14 @@
 package com.inhatc.petcare.model;
 
-public class Pet {
+import com.google.firebase.firestore.Exclude;
+import java.io.Serializable;
+
+public class Pet implements Serializable {
+
+    // Firestore 문서 ID를 저장할 필드 추가
+    @Exclude // Firestore에 저장되지 않도록 제외
+    public String petId;
+
     public String ownerId;
     public String name;
     public String photoURL;
@@ -22,6 +30,15 @@ public class Pet {
     }
 
     // Getters and Setters
+    @Exclude
+    public String getPetId() {
+        return petId;
+    }
+
+    public void setPetId(String petId) {
+        this.petId = petId;
+    }
+
     public String getOwnerId() {
         return ownerId;
     }

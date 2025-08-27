@@ -9,7 +9,6 @@
     tools:openDrawer="start"
     tools:context=".activity.MainActivity">
 
-    <!-- Main content area -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -20,13 +19,50 @@
             android:orientation="vertical"
             android:gravity="center_horizontal">
 
-            <include layout="@layout/toolbar_profile" />
+            <include layout="@layout/toolbar_title" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="환영합니다!" />
+                android:text="환영합니다!"
+                android:textSize="24sp"
+                android:textStyle="bold" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/mainPetImageView"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:layout_marginTop="24dp"
+                android:src="@drawable/pet"
+                app:civ_border_color="@color/colorSecondary"
+                app:civ_border_width="2dp"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/mainPetNameTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="반려동물을 등록해주세요"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/mainPetDetailsTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="나이: -세, 체중: -kg"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/changePetButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="변경"
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -35,6 +71,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_margin="16dp"
             android:clickable="true"
@@ -44,16 +81,13 @@
 
     </RelativeLayout>
 
-    <!-- Navigation Drawer -->
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        android:visibility="invisible"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/nav_menu"
-        tools:visibility="invisible" />
+        app:menu="@menu/nav_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

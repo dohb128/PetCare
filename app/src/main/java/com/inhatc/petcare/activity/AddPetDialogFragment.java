@@ -27,7 +27,6 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
-
 import com.inhatc.petcare.model.Pet;
 
 import java.io.IOException;
@@ -55,15 +54,7 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
     private Button buttonSave;
 
     private Uri selectedImageUri;
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (getDialog() != null) {
-            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.90);
-            getDialog().getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
-    }
+    private Pet petToEdit;
 
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -85,6 +76,22 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
         this.listener = listener;
     }
 
+    public static AddPetDialogFragment newInstance(Pet pet) {
+        AddPetDialogFragment fragment = new AddPetDialogFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("pet", pet);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            petToEdit = (Pet) getArguments().getSerializable("pet");
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -97,17 +104,29 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
         buttonCancel = view.findViewById(R.id.buttonCancel);
         buttonSave = view.findViewById(R.id.buttonSave);
 
+        if (petToEdit != null) {
+            editTextPetName.setText(petToEdit.getName());
+            editTextPetBirthday.setText(petToEdit.getBirthday());
+            editTextPetWeight.setText(String.format(Locale.getDefault(), "%.1f", petToEdit.getWeight()));
+            // TODO: 이미지 로딩 라이브러리(Glide, Picasso 등)를 사용하여 petToEdit.getPhotoURL()의 이미지를 로드
+        }
+
         petImageView.setOnClickListener(v -> checkGalleryPermissionAndOpenGallery());
-
         editTextPetBirthday.setOnClickListener(v -> showDatePickerDialog());
-
         editTextPetWeight.setOnClickListener(v -> showDecimalNumberPickerDialog());
-
         buttonCancel.setOnClickListener(v -> dismiss());
-
         buttonSave.setOnClickListener(v -> savePet());
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null) {
+            int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.90);
+            getDialog().getWindow().setLayout(width, ViewGroup.LayoutParams.WRAP_CONTENT);
+        }
     }
 
     private void checkGalleryPermissionAndOpenGallery() {
@@ -128,6 +147,8 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
 
     private void openGallery() {
         Intent pickGalleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        // 이 한 줄을 추가하여 임시 읽기 권한을 부여합니다.
+        pickGalleryIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         galleryLauncher.launch(pickGalleryIntent);
     }
 
@@ -186,7 +207,6 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
 
         double weight = Double.parseDouble(weightStr);
 
-        // Calculate age from birthday
         int age = 0;
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
@@ -204,21 +224,33 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
             return;
         }
 
-        // Get ownerId
         String ownerId = FirebaseAuth.getInstance().getCurrentUser() != null ? FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
         if (ownerId == null) {
             Toast.makeText(requireContext(), "로그인된 사용자를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Convert Uri to String photoURL (for now, just set to null or a placeholder)
-        // In a real application, you would upload selectedImageUri to Firebase Storage
-        // and get the download URL here.
-        String photoURL = selectedImageUri != null ? selectedImageUri.toString() : null; // Placeholder
+        // Create or update the pet object
+        Pet pet;
+        if (petToEdit != null) {
+            // Update the existing pet object
+            pet = petToEdit;
+            pet.setName(name);
+            pet.setBirthday(birthday);
+            pet.setAge(age);
+            pet.setWeight(weight);
+            // If a new image is selected, update the photoURL
+            if (selectedImageUri != null) {
+                pet.setPhotoURL(selectedImageUri.toString());
+            }
+        } else {
+            // Create a new pet object
+            String photoURL = selectedImageUri != null ? selectedImageUri.toString() : null;
+            pet = new Pet(ownerId, name, photoURL, age, weight, birthday);
+        }
 
-        Pet newPet = new Pet(ownerId, name, photoURL, age, weight, birthday);
         if (listener != null) {
-            listener.onPetAdded(newPet);
+            listener.onPetAdded(pet);
         }
         dismiss();
     }

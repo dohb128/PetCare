@@ -16,7 +16,7 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <include layout="@layout/toolbar_profile" />
+        <include layout="@layout/toolbar_title" />
 
         <ImageView
             android:id="@+id/imageView"

@@ -27,7 +27,7 @@ local.properties
 crashlytics-build.properties
 
 # Firebase
-*.google-services.json
+google-services.json
 
 # User-specific files
 *.user
