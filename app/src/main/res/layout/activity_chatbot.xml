@@ -12,18 +12,60 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center_horizontal">
+        android:orientation="vertical">
 
         <include layout="@layout/toolbar_title" />
 
+        <!-- 챗봇 제목 -->
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="챗봇"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+            android:layout_margin="16dp"
+            android:text="🐾 반려동물 건강 상담사"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:gravity="center" />
+
+        <!-- 채팅 메시지 영역 -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/chat_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="8dp"
+            android:background="@drawable/chat_background" />
+
+        <!-- 입력 영역 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp"
+            android:background="@color/white"
+            android:elevation="4dp">
+
+            <EditText
+                android:id="@+id/message_input"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:hint="반려동물 건강에 대해 질문해주세요..."
+                android:padding="12dp"
+                android:background="@drawable/input_background"
+                android:maxLines="3"
+                android:inputType="textMultiLine" />
+
+            <ImageButton
+                android:id="@+id/send_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_send"
+                android:background="@drawable/send_button_background"
+                android:contentDescription="전송" />
+
+        </LinearLayout>
 
     </LinearLayout>
 

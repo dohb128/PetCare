@@ -119,6 +119,9 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
             });
         }
 
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+
         // 네비게이션 헤더 타이틀 클릭 시 메인으로 이동
         View headerView = navigationView.getHeaderView(0);
         TextView navTitleView = headerView.findViewById(R.id.nav_Title);
@@ -127,9 +130,6 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
         });
-
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
