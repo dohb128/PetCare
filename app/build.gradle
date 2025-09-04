@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     id 'com.google.gms.google-services'
+    id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin'
 }
 
 android {
@@ -9,18 +10,21 @@ android {
 
     defaultConfig {
         applicationId "com.inhatc.petcare"
-        minSdk 36
-        targetSdk 36
+        minSdk 26
+        targetSdk 35
         versionCode 1
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
         }
     }
     compileOptions {
@@ -62,4 +66,10 @@ dependencies {
 
     // OkHttp for HTTP requests
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+
+    // Google Maps SDK와 위치 서비스 라이브러리
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
+    implementation 'com.google.android.gms:play-services-location:21.0.1' // 위치 정보
+    implementation 'com.google.android.libraries.places:places:3.4.0' // 장소 검색을 위한 라이브러리
+
 }
