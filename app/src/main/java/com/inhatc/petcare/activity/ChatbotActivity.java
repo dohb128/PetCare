@@ -2,6 +2,7 @@ package com.inhatc.petcare.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
@@ -21,7 +22,16 @@ import com.google.android.material.navigation.NavigationView;
 import com.inhatc.petcare.R;
 import com.inhatc.petcare.adapter.ChatAdapter;
 import com.inhatc.petcare.model.ChatMessage;
+import com.inhatc.petcare.model.MedicalRecord;
 import com.inhatc.petcare.service.OpenAIService;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,11 +57,19 @@ public class ChatbotActivity extends AppCompatActivity implements NavigationView
     private ChatAdapter chatAdapter;
     private List<ChatMessage> chatMessages;
     private OpenAIService openAIService;
+    private List<com.inhatc.petcare.model.Pet> userPets; // 사용자 반려동물 목록
+    private List<com.inhatc.petcare.model.MedicalRecord> userMedicalRecords; // 사용자 반려동물 진료 기록 목록
+
+    private FirebaseAuth mAuth;
+    private DatabaseReference medicalRecordsRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatbot);
+
+        mAuth = FirebaseAuth.getInstance();
+        medicalRecordsRef = FirebaseDatabase.getInstance().getReference("medicalRecords");
 
         // OpenAI 서비스 초기화
         openAIService = new OpenAIService(this);
@@ -62,8 +80,13 @@ public class ChatbotActivity extends AppCompatActivity implements NavigationView
         setupToolbar();
         setupNavigation();
 
-        // 환영 메시지 추가
-        addBotMessage("안녕하세요! 🐾 반려동물 건강 상담사입니다.\n\n반려동물의 건강에 대해 궁금한 점이 있으시면 언제든 물어보세요.\n\n예시 질문:\n• 강아지가 밥을 안 먹어요\n• 고양이가 기침을 해요\n• 예방접종은 언제 받아야 하나요?");
+        // 반려동물 정보 로드
+        com.inhatc.petcare.PetCareApplication.getPetsForCurrentUser(pets -> {
+            userPets = pets;
+            loadMedicalRecordsForUserPets(); // 반려동물 정보 로드 후 진료 기록 로드
+            // 환영 메시지 추가
+            addBotMessage("안녕하세요! 🐾 반려동물 건강 상담사입니다.\n\n반려동물의 건강에 대해 궁금한 점이 있으시면 언제든 물어보세요.\n\n예시 질문:\n• 강아지가 밥을 안 먹어요\n• 고양이가 기침을 해요\n• 예방접종은 언제 받아야 하나요?");
+        });
     }
 
     private void initViews() {
@@ -120,6 +143,44 @@ public class ChatbotActivity extends AppCompatActivity implements NavigationView
         });
     }
 
+    private void loadMedicalRecordsForUserPets() {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null || userPets == null || userPets.isEmpty()) {
+            userMedicalRecords = new ArrayList<>(); // 초기화
+            return;
+        }
+
+        userMedicalRecords = new ArrayList<>();
+        // 모든 반려동물의 진료 기록을 가져오기 위해 각 petId로 쿼리
+        // Firebase의 단일 쿼리로는 여러 petId를 동시에 검색하기 어려우므로, 각 반려동물별로 쿼리 수행
+        // 또는 ownerId로 모든 진료 기록을 가져온 후 클라이언트에서 필터링
+
+        // 여기서는 ownerId로 모든 진료 기록을 가져온 후 필터링하는 방식을 사용합니다.
+        medicalRecordsRef.orderByChild("ownerId").equalTo(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot recordSnapshot : snapshot.getChildren()) {
+                    com.inhatc.petcare.model.MedicalRecord record = recordSnapshot.getValue(com.inhatc.petcare.model.MedicalRecord.class);
+                    if (record != null) {
+                        // 현재 사용자의 반려동물에 해당하는 진료 기록만 추가
+                        for (com.inhatc.petcare.model.Pet pet : userPets) {
+                            if (pet.getPetId().equals(record.getPetId())) {
+                                userMedicalRecords.add(record);
+                                break;
+                            }
+                        }
+                    }
+                }
+                // 진료 기록 로드 완료 후 필요한 추가 작업 (예: 챗봇 시작 메시지 업데이트 등)
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("ChatbotActivity", "Failed to load medical records: " + error.getMessage());
+            }
+        });
+    }
+
     private void sendMessage() {
         String message = messageInput.getText().toString().trim();
         if (message.isEmpty()) {
@@ -140,7 +201,7 @@ public class ChatbotActivity extends AppCompatActivity implements NavigationView
         addBotMessage("🤔 생각 중입니다...");
 
         // OpenAI API 호출
-        openAIService.sendMessage(message, new Callback() {
+        openAIService.sendMessage(message, userPets, userMedicalRecords, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 runOnUiThread(() -> {

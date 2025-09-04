@@ -55,6 +55,7 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.PetViewHolder> {
     public void onBindViewHolder(@NonNull PetViewHolder holder, int position) {
         Pet currentPet = petList.get(position);
         holder.petItemNameTextView.setText(currentPet.getName());
+        holder.petItemBreedTextView.setText(String.format(Locale.getDefault(), "품종: %s", currentPet.getBreed()));
         holder.petItemDetailsTextView.setText(String.format(Locale.getDefault(), "나이: %d세, 체중: %.1fkg", currentPet.getAge(), currentPet.getWeight()));
 
         String photoURL = currentPet.getPhotoURL();
@@ -106,6 +107,7 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.PetViewHolder> {
         CircleImageView petItemImageView;
         TextView petItemNameTextView;
         TextView petItemDetailsTextView;
+        TextView petItemBreedTextView;
         ImageButton petItemEditButton;
         ImageButton petItemDeleteButton;
 
@@ -113,6 +115,7 @@ public class PetAdapter extends RecyclerView.Adapter<PetAdapter.PetViewHolder> {
             super(itemView);
             petItemImageView = itemView.findViewById(R.id.petItemImageView);
             petItemNameTextView = itemView.findViewById(R.id.petItemNameTextView);
+            petItemBreedTextView = itemView.findViewById(R.id.petItemBreedTextView);
             petItemDetailsTextView = itemView.findViewById(R.id.petItemDetailsTextView);
             petItemEditButton = itemView.findViewById(R.id.petItemEditButton);
             petItemDeleteButton = itemView.findViewById(R.id.petItemDeleteButton);

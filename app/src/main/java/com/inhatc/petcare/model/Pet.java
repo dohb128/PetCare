@@ -1,16 +1,15 @@
 package com.inhatc.petcare.model;
 
-import com.google.firebase.firestore.Exclude;
 import java.io.Serializable;
 
 public class Pet implements Serializable {
 
-    // Firestore 문서 ID를 저장할 필드 추가
-    @Exclude // Firestore에 저장되지 않도록 제외
+    // Realtime Database 키를 저장할 필드 추가
     public String petId;
 
     public String ownerId;
     public String name;
+    public String breed; // 견종 필드 추가
     public String photoURL;
     public int age;
     public double weight;
@@ -20,9 +19,10 @@ public class Pet implements Serializable {
         // Default constructor required for Firebase
     }
 
-    public Pet(String ownerId, String name, String photoURL, int age, double weight, String birthday) {
+    public Pet(String ownerId, String name, String breed, String photoURL, int age, double weight, String birthday) {
         this.ownerId = ownerId;
         this.name = name;
+        this.breed = breed;
         this.photoURL = photoURL;
         this.age = age;
         this.weight = weight;
@@ -30,7 +30,6 @@ public class Pet implements Serializable {
     }
 
     // Getters and Setters
-    @Exclude
     public String getPetId() {
         return petId;
     }
@@ -53,6 +52,14 @@ public class Pet implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getBreed() {
+        return breed;
+    }
+
+    public void setBreed(String breed) {
+        this.breed = breed;
     }
 
     public String getPhotoURL() {

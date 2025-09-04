@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (currentPet == null) return;
 
         mainPetNameTextView.setText(currentPet.getName());
-        mainPetDetailsTextView.setText(String.format(Locale.getDefault(), "나이: %d세, 체중: %.1fkg", currentPet.getAge(), currentPet.getWeight()));
+        mainPetDetailsTextView.setText(String.format(Locale.getDefault(), "품종: %s, 나이: %d세, 체중: %.1fkg", currentPet.getBreed(), currentPet.getAge(), currentPet.getWeight()));
 
         // 이미지 로딩 로직 (Base64)
         if (currentPet.getPhotoURL() != null && !currentPet.getPhotoURL().isEmpty()) {

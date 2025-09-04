@@ -32,6 +32,13 @@
             tools:text="반려동물 이름"/>
 
         <TextView
+            android:id="@+id/petItemBreedTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            tools:text="품종: 말티즈"/>
+
+        <TextView
             android:id="@+id/petItemDetailsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

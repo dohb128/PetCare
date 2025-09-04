@@ -36,7 +36,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class AddPetDialogFragment extends DialogFragment implements DecimalNumberPickerDialog.OnDecimalNumberSetListener {
+public class AddPetDialogFragment extends DialogFragment implements DecimalNumberPickerDialog.OnDecimalNumberSetListener, BreedSelectionDialogFragment.OnBreedSelectedListener {
 
     public interface OnPetAddedListener {
         void onPetAdded(Pet pet);
@@ -50,6 +50,7 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
     private TextInputEditText editTextPetName;
     private TextInputEditText editTextPetBirthday;
     private TextInputEditText editTextPetWeight;
+    private TextInputEditText editTextPetBreed; // 견종 입력 필드 추가
     private Button buttonCancel;
     private Button buttonSave;
 
@@ -101,6 +102,7 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
         editTextPetName = view.findViewById(R.id.editTextPetName);
         editTextPetBirthday = view.findViewById(R.id.editTextPetBirthday);
         editTextPetWeight = view.findViewById(R.id.editTextPetWeight);
+        editTextPetBreed = view.findViewById(R.id.editTextPetBreed); // 견종 입력 필드 초기화
         buttonCancel = view.findViewById(R.id.buttonCancel);
         buttonSave = view.findViewById(R.id.buttonSave);
 
@@ -108,12 +110,14 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
             editTextPetName.setText(petToEdit.getName());
             editTextPetBirthday.setText(petToEdit.getBirthday());
             editTextPetWeight.setText(String.format(Locale.getDefault(), "%.1f", petToEdit.getWeight()));
+            editTextPetBreed.setText(petToEdit.getBreed()); // 기존 견종 정보 표시
             // TODO: 이미지 로딩 라이브러리(Glide, Picasso 등)를 사용하여 petToEdit.getPhotoURL()의 이미지를 로드
         }
 
         petImageView.setOnClickListener(v -> checkGalleryPermissionAndOpenGallery());
         editTextPetBirthday.setOnClickListener(v -> showDatePickerDialog());
         editTextPetWeight.setOnClickListener(v -> showDecimalNumberPickerDialog());
+        editTextPetBreed.setOnClickListener(v -> showBreedSelectionDialog()); // 견종 선택 다이얼로그 호출
         buttonCancel.setOnClickListener(v -> dismiss());
         buttonSave.setOnClickListener(v -> savePet());
 
@@ -195,12 +199,24 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
         editTextPetWeight.setText(String.format(Locale.getDefault(), "%.1f", number));
     }
 
+    private void showBreedSelectionDialog() {
+        BreedSelectionDialogFragment breedDialog = new BreedSelectionDialogFragment();
+        breedDialog.setOnBreedSelectedListener(this);
+        breedDialog.show(getParentFragmentManager(), "BreedSelectionDialogFragment");
+    }
+
+    @Override
+    public void onBreedSelected(String breed) {
+        editTextPetBreed.setText(breed);
+    }
+
     private void savePet() {
         String name = editTextPetName.getText().toString().trim();
         String birthday = editTextPetBirthday.getText().toString().trim();
         String weightStr = editTextPetWeight.getText().toString().trim();
+        String breed = editTextPetBreed.getText().toString().trim(); // 견종 정보 가져오기
 
-        if (name.isEmpty() || birthday.isEmpty() || weightStr.isEmpty()) {
+        if (name.isEmpty() || birthday.isEmpty() || weightStr.isEmpty() || breed.isEmpty()) {
             Toast.makeText(requireContext(), "모든 필드를 입력해주세요.", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -239,6 +255,7 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
             pet.setBirthday(birthday);
             pet.setAge(age);
             pet.setWeight(weight);
+            pet.setBreed(breed); // 견종 정보 업데이트
             // If a new image is selected, update the photoURL
             if (selectedImageUri != null) {
                 pet.setPhotoURL(selectedImageUri.toString());
@@ -246,7 +263,7 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
         } else {
             // Create a new pet object
             String photoURL = selectedImageUri != null ? selectedImageUri.toString() : null;
-            pet = new Pet(ownerId, name, photoURL, age, weight, birthday);
+            pet = new Pet(ownerId, name, breed, photoURL, age, weight, birthday); // 견종 정보 추가
         }
 
         if (listener != null) {
