@@ -7,7 +7,9 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
 import android.net.Uri;
+import androidx.exifinterface.media.ExifInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -27,6 +29,11 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.inhatc.petcare.model.Pet;
 
 import java.io.IOException;
@@ -35,6 +42,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import android.util.Log;
 
 public class AddPetDialogFragment extends DialogFragment implements DecimalNumberPickerDialog.OnDecimalNumberSetListener, BreedSelectionDialogFragment.OnBreedSelectedListener {
 
@@ -56,19 +64,14 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
 
     private Uri selectedImageUri;
     private Pet petToEdit;
+    private DatabaseReference petsRef;
 
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
                     selectedImageUri = result.getData().getData();
-                    try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), selectedImageUri);
-                        petImageView.setImageBitmap(bitmap);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Toast.makeText(requireContext(), "이미지를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
-                    }
+                    displaySelectedImage();
                 }
             }
     );
@@ -77,10 +80,10 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
         this.listener = listener;
     }
 
-    public static AddPetDialogFragment newInstance(Pet pet) {
+    public static AddPetDialogFragment newInstance(String petId) {
         AddPetDialogFragment fragment = new AddPetDialogFragment();
         Bundle args = new Bundle();
-        args.putSerializable("pet", pet);
+        args.putString("petId", petId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -88,8 +91,33 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        petsRef = FirebaseDatabase.getInstance().getReference("pets");
+
         if (getArguments() != null) {
-            petToEdit = (Pet) getArguments().getSerializable("pet");
+            String petId = getArguments().getString("petId");
+            if (petId != null) {
+                petsRef.child(petId).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        petToEdit = snapshot.getValue(Pet.class);
+                        if (petToEdit != null) {
+                            if (getView() != null) {
+                                updateUIWithPetData();
+                            }
+                        } else {
+                            Toast.makeText(requireContext(), "반려동물 정보를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                            dismiss();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("AddPetDialogFragment", "Failed to load pet data: " + error.getMessage());
+                        Toast.makeText(requireContext(), "반려동물 정보를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
+                        dismiss();
+                    }
+                });
+            }
         }
     }
 
@@ -102,16 +130,14 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
         editTextPetName = view.findViewById(R.id.editTextPetName);
         editTextPetBirthday = view.findViewById(R.id.editTextPetBirthday);
         editTextPetWeight = view.findViewById(R.id.editTextPetWeight);
-        editTextPetBreed = view.findViewById(R.id.editTextPetBreed); // 견종 입력 필드 초기화
+        editTextPetBreed = view.findViewById(R.id.editTextPetBreed);
         buttonCancel = view.findViewById(R.id.buttonCancel);
         buttonSave = view.findViewById(R.id.buttonSave);
 
         if (petToEdit != null) {
-            editTextPetName.setText(petToEdit.getName());
-            editTextPetBirthday.setText(petToEdit.getBirthday());
-            editTextPetWeight.setText(String.format(Locale.getDefault(), "%.1f", petToEdit.getWeight()));
-            editTextPetBreed.setText(petToEdit.getBreed()); // 기존 견종 정보 표시
-            // TODO: 이미지 로딩 라이브러리(Glide, Picasso 등)를 사용하여 petToEdit.getPhotoURL()의 이미지를 로드
+            updateUIWithPetData();
+        } else {
+            petImageView.setImageResource(R.drawable.pet); // 새로운 반려동물 추가 시 기본 이미지 설정
         }
 
         petImageView.setOnClickListener(v -> checkGalleryPermissionAndOpenGallery());
@@ -168,6 +194,66 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
         }
     }
 
+    private void displaySelectedImage() {
+        if (selectedImageUri != null) {
+            try {
+                Bitmap originalBitmap = MediaStore.Images.Media.getBitmap(requireActivity().getContentResolver(), selectedImageUri);
+                Bitmap rotatedBitmap = rotateBitmap(originalBitmap, selectedImageUri);
+                petImageView.setImageBitmap(rotatedBitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(requireContext(), "이미지를 불러오는 데 실패했습니다.", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            petImageView.setImageResource(R.drawable.pet); // 기본 이미지로 설정
+        }
+    }
+
+    private Bitmap rotateBitmap(Bitmap bitmap, Uri uri) throws IOException {
+        ExifInterface exifInterface = new ExifInterface(requireActivity().getContentResolver().openInputStream(uri));
+        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        Matrix matrix = new Matrix();
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.postRotate(90);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                matrix.postRotate(180);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                matrix.postRotate(270);
+                break;
+            default:
+                return bitmap;
+        }
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    private void updateUIWithPetData() {
+        if (petToEdit != null) {
+            editTextPetName.setText(petToEdit.getName());
+            editTextPetBirthday.setText(petToEdit.getBirthday());
+            editTextPetWeight.setText(String.format(Locale.getDefault(), "%.1f", petToEdit.getWeight()));
+            editTextPetBreed.setText(petToEdit.getBreed());
+
+            if (petToEdit.getPhotoURL() != null && petToEdit.getPhotoURL().startsWith("content://")) {
+                selectedImageUri = Uri.parse(petToEdit.getPhotoURL());
+                displaySelectedImage();
+            } else if (petToEdit.getPhotoURL() != null && !petToEdit.getPhotoURL().isEmpty()) {
+                try {
+                    byte[] decodedString = android.util.Base64.decode(petToEdit.getPhotoURL(), android.util.Base64.DEFAULT);
+                    Bitmap decodedBitmap = android.graphics.BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    petImageView.setImageBitmap(decodedBitmap);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                    petImageView.setImageResource(R.drawable.pet);
+                }
+            } else {
+                petImageView.setImageResource(R.drawable.pet);
+            }
+        }
+    }
+
     private void showDatePickerDialog() {
         final Calendar c = Calendar.getInstance();
         int year = c.get(Calendar.YEAR);
@@ -175,6 +261,7 @@ public class AddPetDialogFragment extends DialogFragment implements DecimalNumbe
         int day = c.get(Calendar.DAY_OF_MONTH);
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(requireContext(),
+                android.R.style.Theme_Holo_Light_Dialog,
                 (view, selectedYear, selectedMonth, selectedDay) -> {
                     String date = String.format(Locale.getDefault(), "%d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay);
                     editTextPetBirthday.setText(date);

@@ -1,9 +1,9 @@
 # 프로젝트 정보
 
 - **프로젝트 이름**: PetCare
-- **프로젝트 로고 or 이미지**:
-- **프로젝트 소개**: 반려동물 건강 관리, 의료 기록, 챗봇 상담, 주변 병원 찾기 등의 기능을 제공하는 안드로이드 애플리케이션입니다.
-- **배포 주소**: (정보 없음)
+- **프로젝트 로고**: <img width="1024" height="1024" alt="Image" src="https://github.com/user-attachments/assets/c7d4bfc1-85d4-4a60-a511-017db42a22a1" />
+- **프로젝트 소개**: 반려동물 눈 건강 관리, 의료 기록, 챗봇 상담, 주변 병원 찾기 등의 기능을 제공하는 안드로이드 애플리케이션입니다.
+- **배포 주소**: https://drive.google.com/file/d/1bXfgTFeo-7eIJXqsn5oxIt7vRuCF_fdu/view?usp=sharing
 - **개발 기간**: 2025.03~
 - **개발자 소개**: https://github.com/dohb128
 
@@ -55,7 +55,4 @@ cd SW2025
 
 # 기타 추가 사항
 
-- **피그마**: (정보 없음)
-- **개발 일지**: (정보 없음)
-- **회고 블로그**: (정보 없음)
-- (기타 추가 정보 없음)
+- **개발 일지**: https://www.notion.so/2647494724cb8085931cd7687269dcd1?source=copy_link

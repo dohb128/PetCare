@@ -236,7 +236,9 @@ public class MedicalRecordActivity extends AppCompatActivity implements Navigati
         // 날짜 클릭 시 DatePicker
         dialogDate.setOnClickListener(v -> {
             Calendar c = Calendar.getInstance();
-            DatePickerDialog dp = new DatePickerDialog(this, (DatePicker view, int year, int month, int dayOfMonth) -> {
+            DatePickerDialog dp = new DatePickerDialog(this,
+                android.R.style.Theme_Holo_Light_Dialog,
+                (DatePicker view, int year, int month, int dayOfMonth) -> {
                 dialogDate.setText(String.format("%04d-%02d-%02d", year, month + 1, dayOfMonth));
             }, c.get(Calendar.YEAR), c.get(Calendar.MONTH), c.get(Calendar.DAY_OF_MONTH));
             dp.show();

@@ -30,9 +30,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Base64;
+import androidx.exifinterface.media.ExifInterface;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import androidx.core.content.ContextCompat;
@@ -151,7 +153,7 @@ public class MyProfileActivity extends AppCompatActivity implements NavigationVi
             @Override
             public void onEditClick(int position) {
                 Pet petToEdit = petList.get(position);
-                AddPetDialogFragment editPetDialogFragment = AddPetDialogFragment.newInstance(petToEdit);
+                AddPetDialogFragment editPetDialogFragment = AddPetDialogFragment.newInstance(petToEdit.getPetId());
                 editPetDialogFragment.setOnPetAddedListener(MyProfileActivity.this);
                 editPetDialogFragment.show(getSupportFragmentManager(), "AddPetDialogFragment");
             }
@@ -221,17 +223,25 @@ public class MyProfileActivity extends AppCompatActivity implements NavigationVi
     }
 
     private void updateProfilePhoto(Uri uri) {
-        String base64Image = uriToBase64(uri);
-        if (base64Image != null) {
-            usersRef.child("profilePhotoURL").setValue(base64Image)
-                    .addOnSuccessListener(aVoid -> {
-                        Toast.makeText(MyProfileActivity.this, "프로필 사진이 업데이트되었습니다.", Toast.LENGTH_SHORT).show();
-                        profileImageView.setImageURI(uri);
-                    })
-                    .addOnFailureListener(e -> {
-                        Toast.makeText(MyProfileActivity.this, "프로필 사진 업데이트에 실패했습니다.", Toast.LENGTH_SHORT).show();
-                        Log.e(TAG, "프로필 사진 업데이트 실패", e);
-                    });
+        try {
+            Bitmap originalBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
+            Bitmap rotatedBitmap = rotateBitmap(originalBitmap, uri);
+            String base64Image = bitmapToBase64(rotatedBitmap);
+
+            if (base64Image != null) {
+                usersRef.child("profilePhotoURL").setValue(base64Image)
+                        .addOnSuccessListener(aVoid -> {
+                            Toast.makeText(MyProfileActivity.this, "프로필 사진이 업데이트되었습니다.", Toast.LENGTH_SHORT).show();
+                            profileImageView.setImageBitmap(rotatedBitmap);
+                        })
+                        .addOnFailureListener(e -> {
+                            Toast.makeText(MyProfileActivity.this, "프로필 사진 업데이트에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                            Log.e(TAG, "프로필 사진 업데이트 실패", e);
+                        });
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "프로필 사진 처리 실패", e);
+            Toast.makeText(MyProfileActivity.this, "프로필 사진 처리 실패", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -282,15 +292,34 @@ public class MyProfileActivity extends AppCompatActivity implements NavigationVi
                 });
     }
 
-    private String uriToBase64(Uri uri) {
+    private Bitmap rotateBitmap(Bitmap bitmap, Uri uri) throws IOException {
+        ExifInterface exifInterface = new ExifInterface(this.getContentResolver().openInputStream(uri));
+        int orientation = exifInterface.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+        Matrix matrix = new Matrix();
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                matrix.postRotate(90);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                matrix.postRotate(180);
+                break;
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                matrix.postRotate(270);
+                break;
+            default:
+                return bitmap;
+        }
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    private String bitmapToBase64(Bitmap bitmap) {
         try {
-            Bitmap bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), uri);
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outputStream);
             byte[] byteArray = outputStream.toByteArray();
             return Base64.encodeToString(byteArray, Base64.DEFAULT);
-        } catch (IOException e) {
-            Log.e(TAG, "URI to Base64 conversion failed", e);
+        } catch (Exception e) {
+            Log.e(TAG, "Bitmap to Base64 conversion failed", e);
             return null;
         }
     }
@@ -399,14 +428,30 @@ public class MyProfileActivity extends AppCompatActivity implements NavigationVi
     public void onPetAdded(Pet pet) {
         if (pet.getPetId() == null || pet.getPetId().isEmpty()) {
             if (pet.getPhotoURL() != null && pet.getPhotoURL().startsWith("content://")) {
-                String base64Image = uriToBase64(Uri.parse(pet.getPhotoURL()));
-                pet.setPhotoURL(base64Image);
+                try {
+                    Uri photoUri = Uri.parse(pet.getPhotoURL());
+                    Bitmap originalBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
+                    Bitmap rotatedBitmap = rotateBitmap(originalBitmap, photoUri);
+                    String base64Image = bitmapToBase64(rotatedBitmap);
+                    pet.setPhotoURL(base64Image);
+                } catch (IOException e) {
+                    Log.e(TAG, "Error processing pet photo for new pet", e);
+                    Toast.makeText(this, "반려동물 사진 처리 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                }
             }
             savePetToRealtimeDatabase(pet);
         } else {
             if (pet.getPhotoURL() != null && pet.getPhotoURL().startsWith("content://")) {
-                String base64Image = uriToBase64(Uri.parse(pet.getPhotoURL()));
-                pet.setPhotoURL(base64Image);
+                try {
+                    Uri photoUri = Uri.parse(pet.getPhotoURL());
+                    Bitmap originalBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), photoUri);
+                    Bitmap rotatedBitmap = rotateBitmap(originalBitmap, photoUri);
+                    String base64Image = bitmapToBase64(rotatedBitmap);
+                    pet.setPhotoURL(base64Image);
+                } catch (IOException e) {
+                    Log.e(TAG, "Error processing pet photo for existing pet", e);
+                    Toast.makeText(this, "반려동물 사진 처리 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show();
+                }
             }
             updatePetInRealtimeDatabase(pet);
         }

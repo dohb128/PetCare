@@ -299,8 +299,7 @@ public class NearbyHospitalsActivity extends AppCompatActivity implements Naviga
         if (id == R.id.nav_my_page) {
             startActivity(new Intent(this, MyProfileActivity.class));
         } else if (id == R.id.nav_medical_records) {
-            // MedicalRecordActivity로 이동하도록 수정
-            // startActivity(new Intent(this, MedicalRecordActivity.class));
+            startActivity(new Intent(this, MedicalRecordActivity.class));
         } else if (id == R.id.nav_chatbot) {
             startActivity(new Intent(this, ChatbotActivity.class));
         } else if (id == R.id.nav_nearby_hospitals) {
