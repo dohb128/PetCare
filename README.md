@@ -1,6 +1,7 @@
 # 프로젝트 정보
 
-- **프로젝트 이름**: PetCare
+- **프로젝트 이름** 
+    # **PetCare**
 - **프로젝트 로고**: <img width="1024" height="1024" alt="Image" src="https://github.com/user-attachments/assets/c7d4bfc1-85d4-4a60-a511-017db42a22a1" />
 - **프로젝트 소개**: 반려동물 눈 건강 관리, 의료 기록, 챗봇 상담, 주변 병원 찾기 등의 기능을 제공하는 안드로이드 애플리케이션입니다.
 - **배포 주소**: https://drive.google.com/file/d/1bXfgTFeo-7eIJXqsn5oxIt7vRuCF_fdu/view?usp=sharing
@@ -47,12 +48,52 @@ cd SW2025
 # 주요 기능
 
 - **반려동물 관리**: 반려동물 정보 등록 및 관리
-- **챗봇 상담**: OpenAI API를 활용한 반려동물 관련 챗봇 상담
-- **눈 건강 검사**: 반려동물의 눈 건강 상태를 확인하는 기능
-- **의료 기록 관리**: 반려동물의 예방 접종, 투약 등 의료 기록 등록 및 조회
-- **주변 병원 찾기**: Google Maps를 이용한 주변 동물 병원 검색 및 위치 표시
-- **사용자 프로필**: 사용자 정보 관리 및 로그인 기능
+  - 마이페이지에서 프로필 및 닉네임 수정
+  - ‘추가’ 버튼으로 반려동물 등록
+  - 등록된 반려동물 수정 및 삭제 가능
+  - 사용자 및 반려동물의 정보는 데이터베이스에 저장
+![Image](https://github.com/user-attachments/assets/e21c19e2-7434-4796-91b8-0fe9fd0d9bef)
 
+- **챗봇 상담**: OpenAI API를 활용한 반려동물 관련 챗봇 상담
+  -   OpenAI API를 활용해 챗봇 기능 구현
+“당신은 반려동물 건강 전문가입니다. 반려동물의 질병, 증상, 예방접종, 영양 등에 대해 전문적이고 친근하게 답변해주세요. 항상 한국어로 답변하고, 필요시 수의사 상담을 권장하세요.“ 프롬포트 설정
+  -  Database에 접근하여, 반려동물의 이름, 나이,
+  -  체중, 진료기록 등을 참조해 개인화 함
+  - 사용자가 질문 시 AI에게 전달 후 결과 출력
+
+
+| 챗봇 초기화면 | 챗봇 질문 | 챗봇 답변 |
+| --- | --- | --- |
+| ![Image](https://github.com/user-attachments/assets/324634d9-6420-4be0-a6e8-ffb84641be55) | ![Image](https://github.com/user-attachments/assets/c8d254c1-b69a-45be-b994-610a1c6f0b9a) | ![Image](https://github.com/user-attachments/assets/8a081d4a-6fc0-4323-af8b-dc4de766ea27) |
+- **눈 건강 검사**: 반려동물의 눈 건강 상태를 확인하는 기능
+  - 홈 화면에서 플로팅 버튼 선택
+  - 카메라 또는 갤러리로 이미지 선택 후 ‘눈 건강 확인하기‘ 버튼 선택
+  - **AWS EC2 FlaskServer**로 이미지 전송 후 결과 출력
+  - 반응속도 1~2초
+  - 약 92% 정확도(13/14)
+
+| 홈 화면의 버튼 | 눈 건강 검사 초기화면 | 눈 건강 검사 결과 |
+| --- | --- | --- |
+| ![Image](https://github.com/user-attachments/assets/1db65251-e0c5-4be6-85de-1a021f418fdf) | ![Image](https://github.com/user-attachments/assets/929ef2e4-5f37-433c-8839-c39ddc1fc9cb) | ![Image](https://github.com/user-attachments/assets/bda8dd87-a237-467f-a03a-10c5a6c69e2f) |
+
+- **진료 기록 관리**: 반려동물의 예방 접종, 투약 등 의료 기록 등록 및 조회
+  - 날짜, 진료 항목, 메모 등록 가능
+  - ‘진료‘, ‘접종‘, ‘약 복용‘ 총 3가지 타입으로 분류
+  - 등록된 동물별로 진료 기록 관리
+  - 등록된 항목은 데이터베이스에 저장
+
+| 진료 기록 화면 | 진료 기록 추가 |
+| --- | --- |
+| ![Image](https://github.com/user-attachments/assets/6ae75699-f2c4-4aad-b80c-c0565ef76a22) |![Image](https://github.com/user-attachments/assets/9158fa15-26c1-4481-a4a4-5f95ef2a09e4) |
+
+- **주변 병원 찾기**: Google Maps를 이용한 주변 동물 병원 검색 및 위치 표시
+  - Google Maps API를 활용해 구현
+  - GPS로 현재 위치를 받아, 주변 동물병원을 탐색한 뒤, 마커를 선택하면 해당 병원의 정보 표시 
+
+![Image](https://github.com/user-attachments/assets/70a64f58-664b-4816-9471-9fe1577a1780)
+
+- **사용자 프로필**: 사용자 정보 관리 및 로그인 기능
+![Image](https://github.com/user-attachments/assets/07361122-7977-4229-bc77-defede41c68a)
 # 기타 추가 사항
 
 - **개발 일지**: https://www.notion.so/2647494724cb8085931cd7687269dcd1?source=copy_link
