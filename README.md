@@ -1,8 +1,6 @@
 # 프로젝트 정보
-
-- **프로젝트 이름** 
-    # **PetCare**
-- **프로젝트 로고**: <img width="1024" height="1024" alt="Image" src="https://github.com/user-attachments/assets/c7d4bfc1-85d4-4a60-a511-017db42a22a1" />
+## **PetCare**
+- **프로젝트 로고**  ![Image](https://github.com/user-attachments/assets/c7d4bfc1-85d4-4a60-a511-017db42a22a1)
 - **프로젝트 소개**: 반려동물 눈 건강 관리, 의료 기록, 챗봇 상담, 주변 병원 찾기 등의 기능을 제공하는 안드로이드 애플리케이션입니다.
 - **배포 주소**: https://drive.google.com/file/d/1bXfgTFeo-7eIJXqsn5oxIt7vRuCF_fdu/view?usp=sharing
 - **개발 기간**: 2025.03~
@@ -45,6 +43,10 @@ cd SW2025
 - **챗봇**: OpenAI API 연동
 - **UI/UX**: Material Design, CircleImageView 라이브러리
 
+# 시스템 아키텍처
+
+![Image](https://github.com/user-attachments/assets/9909d4a9-648f-46ab-92b6-f81a97722727)
+
 # 주요 기능
 
 - **반려동물 관리**: 반려동물 정보 등록 및 관리
@@ -55,17 +57,19 @@ cd SW2025
 ![Image](https://github.com/user-attachments/assets/e21c19e2-7434-4796-91b8-0fe9fd0d9bef)
 
 - **챗봇 상담**: OpenAI API를 활용한 반려동물 관련 챗봇 상담
-  -   OpenAI API를 활용해 챗봇 기능 구현
-“당신은 반려동물 건강 전문가입니다. 반려동물의 질병, 증상, 예방접종, 영양 등에 대해 전문적이고 친근하게 답변해주세요. 항상 한국어로 답변하고, 필요시 수의사 상담을 권장하세요.“ 프롬포트 설정
-  -  Database에 접근하여, 반려동물의 이름, 나이,
-  -  체중, 진료기록 등을 참조해 개인화 함
+![Image](https://github.com/user-attachments/assets/7836b9b4-1589-416e-8605-3ffabdc8906b)
+  - OpenAI API를 활용해 챗봇 기능 구현
+  - “당신은 반려동물 건강 전문가입니다. 반려동물의 질병, 증상, 예방접종, 영양 등에 대해 전문적이고 친근하게 답변해주세요. 항상 한국어로 답변하고, 필요시 수의사 상담을 권장하세요.“ 프롬포트 설정
+  - Database에 접근하여, 반려동물의 이름, 나이, 체중, 진료기록 등을 참조해 개인화 함
   - 사용자가 질문 시 AI에게 전달 후 결과 출력
-
 
 | 챗봇 초기화면 | 챗봇 질문 | 챗봇 답변 |
 | --- | --- | --- |
 | ![Image](https://github.com/user-attachments/assets/324634d9-6420-4be0-a6e8-ffb84641be55) | ![Image](https://github.com/user-attachments/assets/c8d254c1-b69a-45be-b994-610a1c6f0b9a) | ![Image](https://github.com/user-attachments/assets/8a081d4a-6fc0-4323-af8b-dc4de766ea27) |
-- **눈 건강 검사**: 반려동물의 눈 건강 상태를 확인하는 기능
+
+- **눈 건강 검사**: 직접 제작하고 학습시킨 ['pet_eye_disease_model_v4.h5' 머신러닝 모델](https://github.com/dohb128/SW2025)을 **AWS EC2** 서버에 배포하여 반려동물의 눈 건강 상태를 확인
+
+![Image](https://github.com/user-attachments/assets/c262c401-c34b-48d8-bee0-c6e28df184bc)
   - 홈 화면에서 플로팅 버튼 선택
   - 카메라 또는 갤러리로 이미지 선택 후 ‘눈 건강 확인하기‘ 버튼 선택
   - **AWS EC2 FlaskServer**로 이미지 전송 후 결과 출력
@@ -94,6 +98,8 @@ cd SW2025
 
 - **사용자 프로필**: 사용자 정보 관리 및 로그인 기능
 ![Image](https://github.com/user-attachments/assets/07361122-7977-4229-bc77-defede41c68a)
-# 기타 추가 사항
 
-- **개발 일지**: https://www.notion.so/2647494724cb8085931cd7687269dcd1?source=copy_link
+# 프로젝트 성과
+
+* **독자적인 머신러닝 모델 개발 및 배포**: 반려동물 눈 질환 진단을 위한 모델을 **직접 제작하고 학습**시켰으며, 이를 **AWS EC2**에 배포하여 애플리케이션의 핵심 기능을 구현했습니다.
+* **클라우드 기반 서버 구축**: Flask를 활용한 API 서버를 구축하고, AWS를 통해 안정적으로 운영함으로써 앱의 핵심 기능을 효과적으로 지원했습니다.
