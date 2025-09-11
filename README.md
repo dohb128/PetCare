@@ -1,6 +1,6 @@
 # 프로젝트 정보
 ## **PetCare**
-- **프로젝트 로고**  ![Image](https://github.com/user-attachments/assets/c7d4bfc1-85d4-4a60-a511-017db42a22a1)
+- **프로젝트 로고**  <img src="https://github.com/user-attachments/assets/c7d4bfc1-85d4-4a60-a511-017db42a22a1" width="40%" height="40%">
 - **프로젝트 소개**: 반려동물 눈 건강 관리, 의료 기록, 챗봇 상담, 주변 병원 찾기 등의 기능을 제공하는 안드로이드 애플리케이션입니다.
 - **배포 주소**: https://drive.google.com/file/d/1bXfgTFeo-7eIJXqsn5oxIt7vRuCF_fdu/view?usp=sharing
 - **개발 기간**: 2025.03~
@@ -50,11 +50,11 @@ cd SW2025
 # 주요 기능
 
 - **반려동물 관리**: 반려동물 정보 등록 및 관리
-  - 마이페이지에서 프로필 및 닉네임 수정
-  - ‘추가’ 버튼으로 반려동물 등록
-  - 등록된 반려동물 수정 및 삭제 가능
-  - 사용자 및 반려동물의 정보는 데이터베이스에 저장
-![Image](https://github.com/user-attachments/assets/e21c19e2-7434-4796-91b8-0fe9fd0d9bef)
+  - 마이페이지에서 프로필 및 닉네임 수정
+  - ‘추가’ 버튼으로 반려동물 등록
+  - 등록된 반려동물 수정 및 삭제 가능
+  - 사용자 및 반려동물의 정보는 데이터베이스에 저장
+<img src="https://github.com/user-attachments/assets/e21c19e2-7434-4796-91b8-0fe9fd0d9bef" width="40%" height="40%">
 
 - **챗봇 상담**: OpenAI API를 활용한 반려동물 관련 챗봇 상담
 ![Image](https://github.com/user-attachments/assets/7836b9b4-1589-416e-8605-3ffabdc8906b)
@@ -91,13 +91,13 @@ cd SW2025
 | ![Image](https://github.com/user-attachments/assets/6ae75699-f2c4-4aad-b80c-c0565ef76a22) |![Image](https://github.com/user-attachments/assets/9158fa15-26c1-4481-a4a4-5f95ef2a09e4) |
 
 - **주변 병원 찾기**: Google Maps를 이용한 주변 동물 병원 검색 및 위치 표시
-  - Google Maps API를 활용해 구현
-  - GPS로 현재 위치를 받아, 주변 동물병원을 탐색한 뒤, 마커를 선택하면 해당 병원의 정보 표시 
+  - Google Maps API를 활용해 구현
+  - GPS로 현재 위치를 받아, 주변 동물병원을 탐색한 뒤, 마커를 선택하면 해당 병원의 정보 표시 
 
-![Image](https://github.com/user-attachments/assets/70a64f58-664b-4816-9471-9fe1577a1780)
+<img src="https://github.com/user-attachments/assets/70a64f58-664b-4816-9471-9fe1577a1780" width="40%" height="40%">
 
 - **사용자 프로필**: 사용자 정보 관리 및 로그인 기능
-![Image](https://github.com/user-attachments/assets/07361122-7977-4229-bc77-defede41c68a)
+<img src="https://github.com/user-attachments/assets/07361122-7977-4229-bc77-defede41c68a" width="40%" height="40%">
 
 # 프로젝트 성과
 
