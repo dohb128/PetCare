@@ -2,6 +2,12 @@
 ## **PetCare**
 - **프로젝트 로고**  <img src="https://github.com/user-attachments/assets/c7d4bfc1-85d4-4a60-a511-017db42a22a1" width="40%" height="40%">
 - **프로젝트 소개**: 반려동물 눈 건강 관리, 의료 기록, 챗봇 상담, 주변 병원 찾기 등의 기능을 제공하는 안드로이드 애플리케이션입니다.
+- **주요 기능**
+    - 반려동물 관리
+    - 챗봇 상담
+    - 눈 건강 검사
+    - 진료 기록 관리
+    - 주변 병원 찾기
 - **배포 주소**: https://drive.google.com/file/d/1bXfgTFeo-7eIJXqsn5oxIt7vRuCF_fdu/view?usp=sharing
 - **개발 기간**: 2025.03~
 - **개발자 소개**: https://github.com/dohb128
