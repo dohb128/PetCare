@@ -16,8 +16,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
             <include layout="@layout/toolbar_title" />
 
@@ -34,10 +34,10 @@
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_marginTop="24dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/pet"
                 app:civ_border_color="@color/colorSecondary"
-                app:civ_border_width="2dp"
-                android:scaleType="centerCrop" />
+                app:civ_border_width="2dp" />
 
             <TextView
                 android:id="@+id/mainPetNameTextView"
@@ -77,7 +77,7 @@
             android:clickable="true"
             android:focusable="true"
             app:backgroundTint="#CFF6A5"
-            app:srcCompat="@drawable/eye" />
+            app:srcCompat="@drawable/check" />
 
     </RelativeLayout>
 

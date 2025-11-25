@@ -22,7 +22,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String TAG = "LoginActivity";
 
     private EditText emailEditText, passwordEditText;
-    private Button signinButton, signupButton;
+    private Button signinButton, signupButton, resetPWButton;
     private FirebaseAuth mAuth;
     private DatabaseReference mDatabase;
 
@@ -38,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.password_edittext);
         signinButton = findViewById(R.id.signin_button);
         signupButton = findViewById(R.id.signup_button);
+        resetPWButton = findViewById(R.id.resetPW_button);
 
         signupButton.setOnClickListener(v -> {
             String email = emailEditText.getText().toString().trim();
@@ -81,7 +82,8 @@ public class LoginActivity extends AppCompatActivity {
                                 Toast.makeText(LoginActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                                 Log.e(TAG, "회원가입 실패: " + task.getException().getMessage());
                             } else {
-                                Toast.makeText(LoginActivity.this, "회원가입 실패: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                                Toast.makeText(LoginActivity.this, "회원가입 실패: " + task.getException().getMessage(),
+                                        Toast.LENGTH_LONG).show();
                                 Log.e(TAG, "회원가입 실패: " + task.getException().getMessage());
                             }
                         }
@@ -104,9 +106,37 @@ public class LoginActivity extends AppCompatActivity {
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                             finish();
                         } else {
-                            Toast.makeText(LoginActivity.this, "로그인 실패: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, "로그인 실패: " + task.getException().getMessage(),
+                                    Toast.LENGTH_LONG).show();
                             Log.e(TAG, "로그인 실패: " + task.getException().getMessage());
                         }
+                    });
+        });
+
+        resetPWButton.setOnClickListener(v -> {
+            String email = emailEditText.getText().toString().trim();
+
+            if (email.isEmpty()) {
+                Toast.makeText(LoginActivity.this, "이메일을 입력해주세요.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            mAuth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener(task -> {
+                        if (task.isCanceled()) {
+                            Log.e(TAG, "SendPasswordResetEmailAsync was canceled.");
+                            Toast.makeText(LoginActivity.this, "비밀번호 재설정 이메일 전송이 취소되었습니다.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        if (!task.isSuccessful()) {
+                            Log.e(TAG, "SendPasswordResetEmailAsync encountered an error: " + task.getException());
+                            Toast.makeText(LoginActivity.this, "비밀번호 재설정 실패: " + task.getException().getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                            return;
+                        }
+
+                        Log.d(TAG, "Password reset email sent successfully.");
+                        Toast.makeText(LoginActivity.this, "비밀번호 재설정 이메일을 전송했습니다.", Toast.LENGTH_SHORT).show();
                     });
         });
     }

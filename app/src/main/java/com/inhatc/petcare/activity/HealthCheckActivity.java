@@ -46,9 +46,7 @@ import okhttp3.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
-
-public class EyeHealthCheckActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class HealthCheckActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 100;
     private static final int GALLERY_PERMISSION_REQUEST_CODE = 101;
@@ -56,10 +54,10 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private Toolbar toolbar;
-    
+
     private TextView emailTextView;
     private ImageView imageView;
-    private Button cameraButton, galleryButton, eyeHealthCheckButton;
+    private Button cameraButton, galleryButton, eyeHealthCheckButton, skinHealthCheckButton;
     private TextView predictionResultText;
     private final OkHttpClient httpClient = new OkHttpClient();
     private FirebaseAuth mAuth;
@@ -72,8 +70,7 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
                     Bitmap imageBitmap = (Bitmap) extras.get("data");
                     imageView.setImageBitmap(imageBitmap);
                 }
-            }
-    );
+            });
 
     private final ActivityResultLauncher<Intent> galleryLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -87,18 +84,17 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
                         e.printStackTrace();
                     }
                 }
-            }
-    );
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_eye_health_check);
+        setContentView(R.layout.activity_health_check);
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
-            startActivity(new Intent(EyeHealthCheckActivity.this, LoginActivity.class));
+            startActivity(new Intent(HealthCheckActivity.this, LoginActivity.class));
             finish();
             return;
         }
@@ -112,7 +108,7 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
         TextView toolbarTitle = toolbar.findViewById(R.id.toolbar_title_textview);
         if (toolbarTitle != null) {
             toolbarTitle.setOnClickListener(v -> {
-                Intent intent = new Intent(EyeHealthCheckActivity.this, MainActivity.class);
+                Intent intent = new Intent(HealthCheckActivity.this, MainActivity.class);
                 // 다른 액티비티 스택을 모두 지우고 새롭게 시작
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent);
@@ -126,7 +122,7 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
         View headerView = navigationView.getHeaderView(0);
         TextView navTitleView = headerView.findViewById(R.id.nav_Title);
         navTitleView.setOnClickListener(v -> {
-            Intent intent = new Intent(EyeHealthCheckActivity.this, MainActivity.class);
+            Intent intent = new Intent(HealthCheckActivity.this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(intent);
         });
@@ -142,33 +138,36 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
         cameraButton = findViewById(R.id.camera_button);
         galleryButton = findViewById(R.id.gallery_button);
         eyeHealthCheckButton = findViewById(R.id.eye_health_check_button);
+        skinHealthCheckButton = findViewById(R.id.skin_health_check_button);
         predictionResultText = findViewById(R.id.prediction_result_text);
-
-        
-
-        
 
         // Set click listeners for camera and gallery buttons
         cameraButton.setOnClickListener(v -> {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
                 openCamera();
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
+                ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.CAMERA },
+                        CAMERA_PERMISSION_REQUEST_CODE);
             }
         });
 
         galleryButton.setOnClickListener(v -> {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
                     openGallery();
                 } else {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_MEDIA_IMAGES}, GALLERY_PERMISSION_REQUEST_CODE);
+                    ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_MEDIA_IMAGES },
+                            GALLERY_PERMISSION_REQUEST_CODE);
                 }
             } else {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                     openGallery();
                 } else {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, GALLERY_PERMISSION_REQUEST_CODE);
+                    ActivityCompat.requestPermissions(this, new String[] { Manifest.permission.READ_EXTERNAL_STORAGE },
+                            GALLERY_PERMISSION_REQUEST_CODE);
                 }
             }
         });
@@ -178,11 +177,27 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
                 predictionResultText.setVisibility(View.GONE);
                 predictionResultText.setText("");
             }
-            uploadCurrentImage();
+            uploadCurrentImage(null);
         });
+
+        skinHealthCheckButton.setOnClickListener(v -> {
+            final String[] items = { "돌출형 병변", "염증형 병변" };
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
+            builder.setTitle("병변 유형 선택");
+            builder.setItems(items, (dialog, which) -> {
+                String selectedType = items[which];
+                if (predictionResultText != null) {
+                    predictionResultText.setVisibility(View.GONE);
+                    predictionResultText.setText("");
+                }
+                uploadCurrentImage(selectedType);
+            });
+            builder.show();
+        });
+
     }
 
-    private void uploadCurrentImage() {
+    private void uploadCurrentImage(String lesionType) {
         if (imageView.getDrawable() == null) {
             Toast.makeText(this, "이미지를 먼저 선택하거나 촬영해 주세요.", Toast.LENGTH_SHORT).show();
             return;
@@ -208,13 +223,27 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
         byte[] imageBytes = baos.toByteArray();
 
         RequestBody imageRequestBody = RequestBody.create(imageBytes, MediaType.parse("image/jpeg"));
-        MultipartBody requestBody = new MultipartBody.Builder()
+        MultipartBody.Builder builder = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("image", "upload.jpg", imageRequestBody)
-                .build();
+                .addFormDataPart("image", "upload.jpg", imageRequestBody);
+
+        String url;
+        if (lesionType == null) {
+            url = "http://54.167.80.112:5000/predict";
+        } else if (lesionType.equals("돌출형 병변")) {
+            url = "http://54.167.80.112:5000/predict_skin_p";
+        } else {
+            url = "http://54.167.80.112:5000/predict_skin_i";
+        }
+
+        if (lesionType != null) {
+            builder.addFormDataPart("lesion_type", lesionType);
+        }
+
+        MultipartBody requestBody = builder.build();
 
         Request request = new Request.Builder()
-                .url("http://54.167.80.112:5000/predict")
+                .url(url)
                 .post(requestBody)
                 .build();
 
@@ -223,7 +252,8 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                runOnUiThread(() -> Toast.makeText(EyeHealthCheckActivity.this, "업로드 실패: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                runOnUiThread(() -> Toast
+                        .makeText(HealthCheckActivity.this, "업로드 실패: " + e.getMessage(), Toast.LENGTH_LONG).show());
             }
 
             @Override
@@ -234,21 +264,23 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
                         String predicted = parsePredictedClass(body);
                         if (predicted == null || predicted.isEmpty()) {
                             // predicted_class가 없으면 raw_output의 argmax로 보정
-                            predicted = parsePredictedFromRawOutput(body);
+                            predicted = parsePredictedFromRawOutput(body, lesionType);
                         }
                         if (predicted == null || predicted.isEmpty()) {
                             predictionResultText.setVisibility(View.GONE);
-                            Toast.makeText(EyeHealthCheckActivity.this, "응답 파싱 실패", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(HealthCheckActivity.this, "응답 파싱 실패", Toast.LENGTH_SHORT).show();
                         } else {
                             String message = formatPredictionMessage(predicted);
                             // 예측 라벨만 굵게 표시하기 위해 HTML 사용
                             String html = highlightLabelBold(predicted, message);
-                            predictionResultText.setText(android.text.Html.fromHtml(html, android.text.Html.FROM_HTML_MODE_LEGACY));
+                            predictionResultText
+                                    .setText(android.text.Html.fromHtml(html, android.text.Html.FROM_HTML_MODE_LEGACY));
                             predictionResultText.setVisibility(View.VISIBLE);
                         }
                     } else {
                         predictionResultText.setVisibility(View.GONE);
-                        Toast.makeText(EyeHealthCheckActivity.this, "서버 오류: " + response.code() + "\n" + body, Toast.LENGTH_LONG).show();
+                        Toast.makeText(HealthCheckActivity.this, "서버 오류: " + response.code() + "\n" + body,
+                                Toast.LENGTH_LONG).show();
                     }
                 });
             }
@@ -256,59 +288,78 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
     }
 
     private String parsePredictedClass(String json) {
-        if (json == null) return null;
+        if (json == null)
+            return null;
         try {
             JSONObject obj = new JSONObject(json);
             String value = obj.optString("predicted_class", null);
-            if (value == null) return null;
+            if (value == null)
+                return null;
             return value.trim();
         } catch (JSONException e) {
             // 폴백: 간단한 문자열 검색
             int keyIndex = json.indexOf("\"predicted_class\"");
-            if (keyIndex < 0) return null;
+            if (keyIndex < 0)
+                return null;
             int colon = json.indexOf(":", keyIndex);
-            if (colon < 0) return null;
+            if (colon < 0)
+                return null;
             int firstQuote = json.indexOf('"', colon + 1);
-            if (firstQuote < 0) return null;
+            if (firstQuote < 0)
+                return null;
             int secondQuote = json.indexOf('"', firstQuote + 1);
-            if (secondQuote < 0) return null;
+            if (secondQuote < 0)
+                return null;
             return json.substring(firstQuote + 1, secondQuote).trim();
         }
     }
 
-    private String parsePredictedFromRawOutput(String json) {
-        if (json == null) return null;
+    private String parsePredictedFromRawOutput(String json, String lesionType) {
+        if (json == null)
+            return null;
         try {
             JSONObject obj = new JSONObject(json);
             // raw_output: [[p1,p2,p3,p4]] 형식 가정
-            if (!obj.has("raw_output")) return null;
+            if (!obj.has("raw_output"))
+                return null;
             // JSONArray 2중 구조를 직접 파싱
             String raw = obj.get("raw_output").toString();
-            // 가장 간단한 방식: 숫자만 추출하여 4개 확률로 해석
-            // 예: [[0.1, 0.2, 0.3, 0.4]]
+            // 가장 간단한 방식: 숫자만 추출하여 확률로 해석
             raw = raw.replace("[", "").replace("]", "");
             String[] parts = raw.split(",");
-            if (parts.length < 4) return null;
+
             double max = -1.0;
             int maxIdx = -1;
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < parts.length; i++) {
                 try {
                     double v = Double.parseDouble(parts[i].trim());
                     if (v > max) {
                         max = v;
                         maxIdx = i;
                     }
-                } catch (Exception ignore) {}
+                } catch (Exception ignore) {
+                }
             }
-            if (maxIdx < 0) return null;
-            // 서버 모델 클래스 순서를 다음과 같이 가정합니다.
-            // 0: 결막염, 1: 백내장, 2: 안검종양, 3: 무증상
-            switch (maxIdx) {
-                case 0: return "결막염";
-                case 1: return "백내장";
-                case 2: return "안검종양";
-                case 3: return "무증상";
-                default: return null;
+            if (maxIdx < 0)
+                return null;
+
+            if (lesionType == null) {
+                // 안구 질환 (4개 클래스)
+                switch (maxIdx) {
+                    case 0:
+                        return "결막염";
+                    case 1:
+                        return "백내장";
+                    case 2:
+                        return "안검종양";
+                    case 3:
+                        return "무증상";
+                    default:
+                        return null;
+                }
+            } else {
+                // 피부 질환: 현재 매핑 정보가 없으므로 null 반환 (추후 구현 필요)
+                return null;
             }
         } catch (Exception e) {
             return null;
@@ -327,6 +378,16 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
             case "질병없음":
             case "정상":
                 return "무증상/질병없음으로 예상됩니다.";
+            case "태선화_과다색소침착":
+                return "태선화,과다색소침착으로 예상됩니다.";
+            case "결절_종괴":
+                return "결절,종괴로 예상됩니다.";
+            case "미란_궤양":
+                return "미란,궤양으로 예상됩니다.";
+            case "농포_여드름":
+                return "농포,여드름으로 예상됩니다.";
+            case "구진_플라그":
+                return "구진,플라그로 예상됩니다.";
             default:
                 return predictedClass + "으로 예상됩니다.";
         }
@@ -335,12 +396,29 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
     private String highlightLabelBold(String predictedClass, String message) {
         // message에서 predictedClass 부분만 <b>로 감싸기
         // "무증상/질병없음으로 예상됩니다."의 경우 "무증상" 또는 "질병없음" 둘 다 처리
-        if (message == null) return "";
-        if (predictedClass == null) return message;
+        if (message == null)
+            return "";
+        if (predictedClass == null)
+            return message;
         try {
             if (predictedClass.equals("무증상") || predictedClass.equals("질병없음") || predictedClass.equals("정상")) {
                 // 문구는 "무증상/질병없음으로 예상됩니다." → 앞 단어만 강조
                 return message.replaceFirst("무증상/질병없음", "<b>무증상/질병없음</b>");
+            }
+            if (predictedClass.equals("태선화_과다색소침착")) {
+                return message.replaceFirst("태선화,과다색소침착", "<b>태선화,과다색소침착</b>");
+            }
+            if (predictedClass.equals("결절_종괴")) {
+                return message.replaceFirst("결절,종괴", "<b>결절,종괴</b>");
+            }
+            if (predictedClass.equals("미란_궤양")) {
+                return message.replaceFirst("미란,궤양", "<b>미란,궤양</b>");
+            }
+            if (predictedClass.equals("농포_여드름")) {
+                return message.replaceFirst("농포,여드름", "<b>농포,여드름</b>");
+            }
+            if (predictedClass.equals("구진_플라그")) {
+                return message.replaceFirst("구진,플라그", "<b>구진,플라그</b>");
             }
             return message.replaceFirst(predictedClass, "<b>" + predictedClass + "</b>");
         } catch (Exception e) {
@@ -353,16 +431,16 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
         int id = item.getItemId();
 
         if (id == R.id.nav_my_page) { // Check if "My Page" was clicked
-            startActivity(new Intent(EyeHealthCheckActivity.this, MyProfileActivity.class));
+            startActivity(new Intent(HealthCheckActivity.this, MyProfileActivity.class));
         } else if (id == R.id.nav_medical_records) {
-            startActivity(new Intent(EyeHealthCheckActivity.this, MedicalRecordActivity.class));
+            startActivity(new Intent(HealthCheckActivity.this, MedicalRecordActivity.class));
         } else if (id == R.id.nav_chatbot) {
-            startActivity(new Intent(EyeHealthCheckActivity.this, ChatbotActivity.class));
+            startActivity(new Intent(HealthCheckActivity.this, ChatbotActivity.class));
         } else if (id == R.id.nav_nearby_hospitals) {
-            startActivity(new Intent(EyeHealthCheckActivity.this, NearbyHospitalsActivity.class));
+            startActivity(new Intent(HealthCheckActivity.this, NearbyHospitalsActivity.class));
         } else if (id == R.id.nav_logout) {
             mAuth.signOut();
-            startActivity(new Intent(EyeHealthCheckActivity.this, LoginActivity.class));
+            startActivity(new Intent(HealthCheckActivity.this, LoginActivity.class));
             finish();
         } else {
             // Handle other menu item clicks if needed, for now just show a toast
@@ -398,7 +476,8 @@ public class EyeHealthCheckActivity extends AppCompatActivity implements Navigat
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openGallery();
             } else {
-                Toast.makeText(this, "Gallery permission is required to access the gallery.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Gallery permission is required to access the gallery.", Toast.LENGTH_SHORT)
+                        .show();
             }
         }
     }

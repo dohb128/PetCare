@@ -41,7 +41,7 @@
             android:name=".activity.MedicalRecordActivity"
             android:exported="false" />
         <activity
-            android:name=".activity.EyeHealthCheckActivity"
+            android:name=".activity.HealthCheckActivity"
             android:exported="false" />
         <activity
             android:name=".activity.LoginActivity"

@@ -13,7 +13,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         fabPetEyeHealth = findViewById(R.id.FabPetEyeHealth);
         fabPetEyeHealth.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, EyeHealthCheckActivity.class);
+            Intent intent = new Intent(MainActivity.this, HealthCheckActivity.class);
             startActivity(intent);
         });
 
