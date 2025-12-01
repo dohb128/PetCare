@@ -430,20 +430,19 @@ public class HealthCheckActivity extends AppCompatActivity implements Navigation
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.nav_my_page) { // Check if "My Page" was clicked
-            startActivity(new Intent(HealthCheckActivity.this, MyProfileActivity.class));
+        if (id == R.id.nav_my_page) {
+            startActivity(new Intent(this, MyProfileActivity.class));
         } else if (id == R.id.nav_medical_records) {
-            startActivity(new Intent(HealthCheckActivity.this, MedicalRecordActivity.class));
+            startActivity(new Intent(this, MedicalRecordActivity.class));
         } else if (id == R.id.nav_chatbot) {
-            startActivity(new Intent(HealthCheckActivity.this, ChatbotActivity.class));
+            // 현재 화면
         } else if (id == R.id.nav_nearby_hospitals) {
-            startActivity(new Intent(HealthCheckActivity.this, NearbyHospitalsActivity.class));
+            startActivity(new Intent(this, NearbyHospitalsActivity.class));
         } else if (id == R.id.nav_logout) {
-            mAuth.signOut();
-            startActivity(new Intent(HealthCheckActivity.this, LoginActivity.class));
+            com.google.firebase.auth.FirebaseAuth.getInstance().signOut();
+            startActivity(new Intent(this, LoginActivity.class));
             finish();
         } else {
-            // Handle other menu item clicks if needed, for now just show a toast
             Toast.makeText(this, item.getTitle() + " 클릭", Toast.LENGTH_SHORT).show();
         }
 
