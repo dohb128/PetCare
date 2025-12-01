@@ -191,7 +191,7 @@ https://drive.google.com/file/d/1-BWLjTZAXh5YIi9B-rsrIhH1KU514O-Z/view?usp=shari
 
 ---
 
-## 🎯 프로젝트 성과 & 향후 계획 (PDF p.24 기반)
+## 🎯 프로젝트 성과 & 향후 계획
 
 ### ✔ 성과
 
@@ -201,7 +201,6 @@ https://drive.google.com/file/d/1-BWLjTZAXh5YIi9B-rsrIhH1KU514O-Z/view?usp=shari
 - EC2 서버에서 안정적인 서비스 제공
 
 ### ✔ 향후 계획
-- 피부 질환 데이터 확장
 - 품종/나이 기반 맞춤형 리포트
 - 반려동물 커뮤니티 기능
 - 건강 맞춤 상품 추천 기능
