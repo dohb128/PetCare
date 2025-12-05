@@ -10,7 +10,7 @@ AI 기반 눈·피부 질환 검사, 의료 기록 관리, 챗봇 상담, 병원
 - **개발 기간**: 2025.03 ~ 2025.12  
 - **앱 다운로드**: https://drive.google.com/file/d/1-BWLjTZAXh5YIi9B-rsrIhH1KU514O-Z/view?usp=sharing  
 - **GitHub (Android App)**: https://github.com/dohb128/PetCare  
-- **GitHub (AI Model)**: https://github.com/SW  ](https://github.com/dohb128/SW2025
+- **GitHub (AI Model)**: https://github.com/dohb128/SW2025
 - **개발자 소개**: https://github.com/dohb128  
 
 ---
