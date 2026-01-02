@@ -229,11 +229,11 @@ public class HealthCheckActivity extends AppCompatActivity implements Navigation
 
         String url;
         if (lesionType == null) {
-            url = "http://54.167.80.112:5000/predict";
+            url = "http://18.207.115.9:5000/predict";
         } else if (lesionType.equals("돌출형 병변")) {
-            url = "http://54.167.80.112:5000/predict_skin_p";
+            url = "http://18.207.115.9:5000/predict_skin_p";
         } else {
-            url = "http://54.167.80.112:5000/predict_skin_i";
+            url = "http://18.207.115.9:5000/predict_skin_i";
         }
 
         if (lesionType != null) {
